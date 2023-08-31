@@ -12,13 +12,14 @@ public class Task1 {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         System.out.println(inputNumber(scanner));
+        scanner.close();
     }
 
     public static float inputNumber(Scanner scanner){
         try {
             System.out.println("Введите дробное число (типа float)");
             return Float.parseFloat(scanner.nextLine());
-        } catch (NumberFormatException e){
+        } catch (NumberFormatException | NullPointerException e){
             System.out.println("Введенное значение не соответствует дробному числу.");
             return inputNumber(scanner);
         }
