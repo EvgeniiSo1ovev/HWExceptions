@@ -1,6 +1,8 @@
 package homework3;
 
 import java.io.*;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -184,15 +186,16 @@ public class Task {
                 File file = new File(fileName);
                 file.createNewFile();
                 StringBuilder text = new StringBuilder();
-                try (BufferedReader bufferedReader = new BufferedReader(new FileReader(file.getAbsoluteFile()));
-                     FileWriter fileWriter = new FileWriter(file.getAbsoluteFile())) {
-                    String line;
+                Charset charset = Charset.forName("US-ASCII");
+                try (BufferedReader bufferedReader = Files.newBufferedReader(file.toPath(), charset);
+                     BufferedWriter bufferedWriter = Files.newBufferedWriter(file.toPath(), charset)) {
+                    String line = null;
                     while ((line = bufferedReader.readLine()) != null) {
                         System.out.println(line);
                         text.append(line);
                     }
                     text.append(dataToString(dataMap)).append("\n");
-                    fileWriter.write(String.valueOf(text));
+                    bufferedWriter.write(String.valueOf(text));
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 }
