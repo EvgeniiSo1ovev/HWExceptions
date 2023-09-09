@@ -187,21 +187,38 @@ public class Task {
                 file.createNewFile();
                 StringBuilder text = new StringBuilder();
                 Charset charset = Charset.forName("US-ASCII");
-                try (BufferedReader bufferedReader = Files.newBufferedReader(file.toPath(), charset);
-                     BufferedWriter bufferedWriter = Files.newBufferedWriter(file.toPath(), charset)) {
-                    String line = null;
-                    while ((line = bufferedReader.readLine()) != null) {
-                        System.out.println(line);
-                        text.append(line);
-                    }
-                    text.append(dataToString(dataMap)).append("\n");
-                    bufferedWriter.write(String.valueOf(text));
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                }
+                String fileText = readFile(file, charset);
+                if (fileText != null) text.append(fileText);
+                writeToFile(file, charset, text, dataMap);
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    public static String readFile(File file, Charset charset) throws IOException {
+        StringBuilder text = new StringBuilder();
+        try (BufferedReader bufferedReader = Files.newBufferedReader(file.toPath(), charset)) {
+            String line;
+            while ((line = bufferedReader.readLine()) != null) {
+                text.append(line).append("\n");
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        if (text.isEmpty()) {
+            return null;
+        }
+        return text.toString();
+    }
+
+    public static void writeToFile(File file, Charset charset, StringBuilder text,
+                                   Map<String, Object> dataMap) throws IOException {
+        try (BufferedWriter bufferedWriter = Files.newBufferedWriter(file.toPath(), charset)) {
+            text.append(dataToString(dataMap));
+            bufferedWriter.write(String.valueOf(text));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
         }
     }
 
